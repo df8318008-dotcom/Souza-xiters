@@ -1,0 +1,2558 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auxílio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'San Francisco', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* ===== TELA DE LOGIN ===== */
+        .login-screen {
+            background: #0f0f1e;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .login-screen.hidden {
+            display: none;
+        }
+
+        .login-header {
+            text-align: center;
+        }
+
+        .login-logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        .login-header h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+
+        .maintenance-warning {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid #ff4757;
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #ff4757;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .maintenance-warning.show {
+            display: block;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input::placeholder {
+            color: #707070;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #ff4757;
+            box-shadow: 0 0 10px rgba(255, 71, 87, 0.2);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-error {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid #ff4757;
+            border-radius: 8px;
+            padding: 12px 15px;
+            color: #ff4757;
+            font-size: 13px;
+            display: none;
+            text-align: center;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* ===== MENU DE AUXÍLIO ===== */
+        .menu-screen {
+            background: #0f0f1e;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        .menu-screen.active {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-icon-badge {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .menu-icon-badge svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .menu-header-content h1 {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .menu-header-content p {
+            color: #a0a0a0;
+            font-size: 13px;
+        }
+
+        .menu-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-btn {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border: none;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
+        }
+
+        .profile-popover {
+            position: absolute;
+            top: 45px;
+            right: 0;
+            background: #1a1a2e;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 13px;
+            white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: none;
+            z-index: 1000;
+            animation: popoverIn 0.2s ease;
+        }
+
+        .profile-popover.visible {
+            display: block;
+        }
+
+        @keyframes popoverIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .option-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #a0a0a0;
+        }
+
+        .option-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .option-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .option-name {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .option-description {
+            color: #707070;
+            font-size: 12px;
+        }
+
+        .option-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-btn {
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: #a0a0a0;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .info-btn:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            color: #ffffff;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 28px;
+            background: #4a4a5e;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 24px;
+        }
+
+        /* Slider AimFOV */
+        .aimfov-item {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .aimfov-item.visible {
+            display: flex;
+        }
+
+        .aimfov-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .aimfov-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .aimfov-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #a0a0a0;
+        }
+
+        .aimfov-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .aimfov-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .aimfov-name {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .aimfov-description {
+            color: #707070;
+            font-size: 12px;
+        }
+
+        .aimfov-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .slider-input {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(to right, #4a4a5e 0%, #4a4a5e 100%);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.5);
+        }
+
+        .slider-input::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(255, 71, 87, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .slider-input::-moz-range-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.5);
+        }
+
+        .slider-value {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: #ff4757;
+            font-size: 13px;
+            font-weight: 600;
+            min-width: 55px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        /* Target Item */
+        .target-item {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            transition: background 0.3s ease;
+        }
+
+        .target-item.visible {
+            display: flex;
+        }
+
+        .target-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .target-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .target-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #a0a0a0;
+        }
+
+        .target-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .target-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .target-name {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .target-description {
+            color: #707070;
+            font-size: 12px;
+            word-break: break-word;
+        }
+
+        .target-options {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .target-btn {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #a0a0a0;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+            font-family: inherit;
+        }
+
+        .target-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        .target-btn.active {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border-color: #ff4757;
+            color: #ffffff;
+        }
+
+        /* Admin Panel */
+        .admin-section {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-section.visible {
+            display: flex;
+        }
+
+        .admin-title {
+            color: #ff4757;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .maintenance-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .maintenance-item:hover {
+            background: rgba(255, 71, 87, 0.15);
+        }
+
+        .maintenance-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 71, 87, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #ff4757;
+        }
+
+        .maintenance-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .maintenance-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .maintenance-name {
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .maintenance-description {
+            color: #a0a0a0;
+            font-size: 12px;
+        }
+
+        .create-login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .create-login-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .form-input {
+            flex: 1;
+            min-width: 100px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 12px;
+            font-family: inherit;
+        }
+
+        .form-input::placeholder {
+            color: #707070;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ff4757;
+            box-shadow: 0 0 8px rgba(255, 71, 87, 0.2);
+        }
+
+        .form-btn {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+
+        .form-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+        }
+
+        /* Icon Palette */
+        .icon-palette {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .palette-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .palette-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .icons-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+        }
+
+        .icon-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #a0a0a0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 4px;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: #ff4757;
+            color: #ff4757;
+            transform: scale(1.05);
+        }
+
+        .icon-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .icon-btn.selected {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border-color: #ff4757;
+            color: #ffffff;
+        }
+
+        .update-icons-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .update-icon-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #a0a0a0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            padding: 4px;
+        }
+
+        .update-icon-btn:hover {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: #ff4757;
+            color: #ff4757;
+            transform: scale(1.05);
+        }
+
+        .update-icon-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .update-icon-btn.selected {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border-color: #ff4757;
+            color: #ffffff;
+        }
+
+        .update-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .update-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            border-radius: 6px;
+            color: #ffffff;
+        }
+
+        .update-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .update-content {
+            flex: 1;
+        }
+
+        .update-title {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .update-description {
+            color: #a0a0a0;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .update-timestamp {
+            color: #707070;
+            font-size: 11px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header h2 {
+            color: #ffffff;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff4757;
+            transform: rotate(90deg);
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notifications-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            transition: all 0.2s ease;
+            margin-right: 8px;
+        }
+
+        .notifications-btn:hover {
+            color: #ff4757;
+            transform: scale(1.1);
+        }
+
+        .notifications-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            color: #ffffff;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .function-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .function-inputs input {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 6px 10px;
+            color: #ffffff;
+            font-size: 11px;
+            font-family: inherit;
+        }
+
+        .function-inputs input::placeholder {
+            color: #707070;
+        }
+
+        .function-inputs input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ff4757;
+        }
+
+        .send-function-btn {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-family: inherit;
+        }
+
+        .send-function-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+        }
+
+        .users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .user-card {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: space-between;
+        }
+
+        .user-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .user-name {
+            color: #ff4757;
+            font-weight: 600;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .user-pass {
+            color: #a0a0a0;
+            font-size: 11px;
+            word-break: break-all;
+        }
+
+        .user-duration {
+            color: #a0a0a0;
+            font-size: 11px;
+        }
+
+        .user-status {
+            color: #a0a0a0;
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .user-status.admin {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 4px 8px;
+            color: #a0a0a0;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 71, 87, 0.2);
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        .action-btn.promote {
+            background: rgba(255, 71, 87, 0.1);
+            border-color: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+        }
+
+        .action-btn.promote:hover {
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+        .action-btn.danger {
+            background: rgba(255, 71, 87, 0.1);
+            border-color: rgba(255, 71, 87, 0.3);
+            color: #ff4757;
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(255, 71, 87, 0.3);
+        }
+
+        .action-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Custom Functions List */
+        .custom-functions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #ff4757;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            transition: all 0.2s ease;
+            padding: 0;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.1);
+            color: #ff3333;
+        }
+
+        .delete-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Notification */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .notification {
+            background: #1a1a2e;
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border-left: 4px solid #ff4757;
+            animation: slideIn 0.3s ease;
+            min-width: 250px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .notification.removing {
+            animation: slideOut 0.3s ease;
+        }
+
+        /* Modal para adicionar tempo */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.visible {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0f0f1e;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 300px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-title {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #ffffff;
+            font-size: 12px;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ff4757;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .modal-btn.confirm {
+            background: linear-gradient(135deg, #ff4757 0%, #ee5a6f 100%);
+            color: #ffffff;
+        }
+
+        .modal-btn.confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.3);
+        }
+
+        .modal-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #a0a0a0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Responsivo */
+        @media (max-width: 480px) {
+            .login-screen,
+            .menu-screen {
+                padding: 20px;
+            }
+
+            .menu-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .menu-header-left {
+                justify-content: center;
+            }
+
+            .menu-header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .notification-container {
+                left: 20px;
+                right: 20px;
+            }
+
+            .notification {
+                min-width: auto;
+            }
+
+            .user-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .user-actions {
+                width: 100%;
+            }
+
+            .action-btn {
+                flex: 1;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-input {
+                min-width: auto;
+            }
+
+            .icons-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TELA DE LOGIN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-header">
+            <div class="login-logo">S</div>
+            <h1>Auxílio</h1>
+            <p>Faça login para acessar</p>
+        </div>
+
+        <div class="maintenance-warning" id="maintenanceWarning">
+            Sistema em manutenção. Apenas administradores podem acessar.
+        </div>
+
+        <form class="login-form" id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" placeholder="Digite seu usuário" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="Digite sua senha" required>
+            </div>
+
+            <div class="login-error" id="loginError"></div>
+
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+    </div>
+
+    <!-- MENU DE AUXÍLIO -->
+    <div class="menu-screen" id="menuScreen">
+        <div class="menu-header">
+            <div class="menu-header-left">
+                <div class="menu-icon-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"></circle>
+                        <path d="M12 1v6m0 6v6"></path>
+                        <path d="M4.22 4.22l4.24 4.24m5.08 5.08l4.24 4.24"></path>
+                        <path d="M1 12h6m6 0h6"></path>
+                        <path d="M4.22 19.78l4.24-4.24m5.08-5.08l4.24-4.24"></path>
+                    </svg>
+                </div>
+                <div class="menu-header-content">
+                    <h1>Auxílio</h1>
+                    <p id="userTypeDisplay">Gerenciar opções de suporte</p>
+                </div>
+            </div>
+            <div class="menu-header-right">
+                <button class="notifications-btn" id="notificationsBtn" title="Notificacoes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </button>
+                <div style="position: relative;">
+                    <button class="profile-btn" id="profileBtn">S</button>
+                    <div class="profile-popover" id="profilePopover">
+                        <div id="loginDuration">Duração: <span id="durationTime">Infinita</span></div>
+                    </div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">Sair</button>
+            </div>
+        </div>
+
+        <div class="options-list" id="optionsList">
+            <div class="option-item">
+                <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L15.09 8.26H22L17.55 12.5L19.64 18.76L12 14.01L4.36 18.76L6.45 12.5L2 8.26H8.91L12 2Z"></path>
+                    </svg>
+                </div>
+                <div class="option-info">
+                    <div class="option-name">Aimbot</div>
+                    <div class="option-description">Mira automática assistida</div>
+                </div>
+                <div class="option-controls">
+                    <button class="info-btn" title="Informações">i</button>
+                    <button class="toggle-switch" data-option="Aimbot" id="aimbotToggle"></button>
+                </div>
+            </div>
+
+            <!-- AimFOV Slider -->
+            <div class="aimfov-item" id="aimFovItem">
+                <div class="aimfov-header">
+                    <div class="aimfov-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <path d="M12 8v-3"></path>
+                            <path d="M12 19v-3"></path>
+                            <path d="M5 12h3"></path>
+                            <path d="M16 12h3"></path>
+                        </svg>
+                    </div>
+                    <div class="aimfov-info">
+                        <div class="aimfov-name">AimFOV</div>
+                        <div class="aimfov-description">Ajusta o campo de visão</div>
+                    </div>
+                </div>
+                <div class="aimfov-controls">
+                    <input type="range" id="aimFovSlider" class="slider-input" min="30" max="120" value="90">
+                    <div class="slider-value" id="aimFovValue">90°</div>
+                </div>
+            </div>
+
+            <!-- Target Selection -->
+            <div class="target-item" id="targetItem">
+                <div class="target-header">
+                    <div class="target-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <circle cx="12" cy="12" r="1"></circle>
+                        </svg>
+                    </div>
+                    <div class="target-info">
+                        <div class="target-name">Target</div>
+                        <div class="target-description">Selecione a parte do corpo</div>
+                    </div>
+                </div>
+                <div class="target-options">
+                    <button type="button" class="target-btn active" data-target="Cabeça">Cabeça</button>
+                    <button type="button" class="target-btn" data-target="Pescoço">Pescoço</button>
+                    <button type="button" class="target-btn" data-target="Peito">Peito</button>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                </div>
+                <div class="option-info">
+                    <div class="option-name">Suavização de Mira</div>
+                    <div class="option-description">Suaviza o movimento da mira</div>
+                </div>
+                <div class="option-controls">
+                    <button class="info-btn" title="Informações">i</button>
+                    <button class="toggle-switch" data-option="Suavização de Mira"></button>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"></path>
+                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="option-info">
+                    <div class="option-name">Recoil Control</div>
+                    <div class="option-description">Controla o recuo das armas</div>
+                </div>
+                <div class="option-controls">
+                    <button class="info-btn" title="Informações">i</button>
+                    <button class="toggle-switch" data-option="Recoil Control"></button>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20m10-10H2"></path>
+                        <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                </div>
+                <div class="option-info">
+                    <div class="option-name">Rastreamento de Alvo</div>
+                    <div class="option-description">Rastreia automaticamente inimigos</div>
+                </div>
+                <div class="option-controls">
+                    <button class="info-btn" title="Informações">i</button>
+                    <button class="toggle-switch" data-option="Rastreamento de Alvo"></button>
+                </div>
+            </div>
+
+            <div class="option-item">
+                <div class="option-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z"></path>
+                    </svg>
+                </div>
+                <div class="option-info">
+                    <div class="option-name">Predição de Movimento</div>
+                    <div class="option-description">Prevê movimento do inimigo</div>
+                </div>
+                <div class="option-controls">
+                    <button class="info-btn" title="Informações">i</button>
+                    <button class="toggle-switch" data-option="Predição de Movimento"></button>
+                </div>
+            </div>
+
+            <!-- Custom Functions Container -->
+            <div class="custom-functions-list" id="customFunctionsList"></div>
+
+            <!-- Custom Targets Container -->
+            <div class="custom-functions-list" id="customTargetsContainer"></div>
+
+            <!-- Admin Section -->
+            <div class="admin-section" id="adminSection">
+                <div class="admin-title">Painel de Administração</div>
+
+                <!-- Maintenance Toggle -->
+                <div class="maintenance-item">
+                    <div class="maintenance-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11z"></path>
+                        </svg>
+                    </div>
+                    <div class="maintenance-info">
+                        <div class="maintenance-name">Modo Manutenção</div>
+                        <div class="maintenance-description">Coloque o site em manutenção</div>
+                    </div>
+                    <div class="option-controls">
+                        <button class="toggle-switch" id="maintenanceToggle"></button>
+                    </div>
+                </div>
+
+                <!-- Create Login Form -->
+                <div class="create-login-form">
+                    <div class="create-login-title">Criar Novo Login</div>
+                    <div class="form-row">
+                        <input type="text" id="newUsername" class="form-input" placeholder="Usuário" maxlength="20">
+                        <input type="password" id="newPassword" class="form-input" placeholder="Senha">
+                        <input type="number" id="newDuration" class="form-input" placeholder="Duração (min)" min="1" max="1440">
+                        <button type="button" class="form-btn" id="createLoginBtn">Criar</button>
+                    </div>
+                </div>
+
+                <!-- Icon Palette for Adding Functions -->
+                <div class="icon-palette">
+                    <div class="palette-title">Adicionar Função</div>
+                    <div class="palette-section">
+                        <div class="icons-grid" id="iconsGrid"></div>
+                        <div class="function-inputs">
+                            <input type="text" id="functionName" class="form-input" placeholder="Nome da função" maxlength="30">
+                            <input type="text" id="functionDescription" class="form-input" placeholder="Descrição" maxlength="50">
+                            <button type="button" class="send-function-btn" id="sendFunctionBtn">Enviar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Create Target -->
+                <div class="create-login-form">
+                    <div class="create-login-title">Criar Target</div>
+                    <div class="form-row">
+                        <input type="text" id="targetName" class="form-input" placeholder="Nome do target" maxlength="30">
+                        <input type="text" id="targetDescription" class="form-input" placeholder="Descrição" maxlength="50">
+                    </div>
+                    <div class="form-row">
+                        <input type="number" id="targetCount" class="form-input" placeholder="Nº de opções" min="1" max="10" value="3">
+                        <button type="button" class="form-btn" id="generateTargetBtn">Gerar</button>
+                    </div>
+                    <div id="targetInputsContainer" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    <button type="button" class="send-function-btn" id="sendTargetBtn" style="display: none; margin-top: 8px;">Enviar Target</button>
+                </div>
+
+                <!-- Send Update Section -->
+                <div class="create-login-form">
+                    <div class="create-login-title">Enviar Atualizacao</div>
+                    <div class="form-row">
+                        <input type="text" id="updateTitle" class="form-input" placeholder="Titulo da atualizacao" maxlength="30">
+                        <input type="text" id="updateDescription" class="form-input" placeholder="Descricao" maxlength="100">
+                    </div>
+                    <div class="palette-section">
+                        <div style="color: #a0a0a0; font-size: 12px; margin-bottom: 8px;">Selecione um icone:</div>
+                        <div class="update-icons-grid" id="updateIconsGrid"></div>
+                        <button type="button" class="send-function-btn" id="sendUpdateBtn">Enviar Atualizacao</button>
+                    </div>
+                </div>
+
+                <!-- Clear Notifications Cache -->
+                <div class="create-login-form">
+                    <div class="create-login-title">Gerenciar Notificacoes</div>
+                    <button type="button" class="send-function-btn" id="clearCacheBtn" style="width: 100%; margin-top: 8px;">Limpar Cache de Notificacoes</button>
+                </div>
+
+                <!-- Users Management -->
+                <div class="create-login-form">
+                    <div class="create-login-title">Gerenciar Usuários</div>
+                    <div class="users-list" id="usersList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Ultimas Atualizacoes -->
+    <div class="modal" id="updatesModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>Ultimas Atualizacoes</h2>
+                <button class="modal-close" id="closeUpdatesModal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="updatesContainer"></div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar tempo -->
+    <div class="modal" id="addTimeModal">
+        <div class="modal-content">
+            <div class="modal-title">Adicionar Tempo</div>
+            <input type="number" id="timeInput" class="modal-input" placeholder="Minutos" min="1" max="1440">
+            <div class="modal-buttons">
+                <button type="button" class="modal-btn confirm" id="confirmTimeBtn">Confirmar</button>
+                <button type="button" class="modal-btn cancel" id="cancelTimeBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer"></div>
+
+    <script>
+        const loginScreen = document.getElementById('loginScreen');
+        const menuScreen = document.getElementById('menuScreen');
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginError = document.getElementById('loginError');
+        const maintenanceWarning = document.getElementById('maintenanceWarning');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const notificationContainer = document.getElementById('notificationContainer');
+        const userTypeDisplay = document.getElementById('userTypeDisplay');
+
+        // Elementos do slider AimFOV
+        const aimFovSlider = document.getElementById('aimFovSlider');
+        const aimFovValue = document.getElementById('aimFovValue');
+        const aimFovItem = document.getElementById('aimFovItem');
+        const aimbotToggle = document.getElementById('aimbotToggle');
+
+        // Elementos do Target
+        const targetItem = document.getElementById('targetItem');
+        const targetButtons = document.querySelectorAll('.target-btn');
+
+        // Elementos do Perfil
+        const profileBtn = document.getElementById('profileBtn');
+        const profilePopover = document.getElementById('profilePopover');
+        const durationTime = document.getElementById('durationTime');
+
+        // Elementos do Admin
+        const adminSection = document.getElementById('adminSection');
+        const maintenanceToggle = document.getElementById('maintenanceToggle');
+        const newUsername = document.getElementById('newUsername');
+        const newPassword = document.getElementById('newPassword');
+        const newDuration = document.getElementById('newDuration');
+        const createLoginBtn = document.getElementById('createLoginBtn');
+        const usersList = document.getElementById('usersList');
+        const iconsGrid = document.getElementById('iconsGrid');
+        const functionName = document.getElementById('functionName');
+        const functionDescription = document.getElementById('functionDescription');
+        const sendFunctionBtn = document.getElementById('sendFunctionBtn');
+        const customFunctionsList = document.getElementById('customFunctionsList');
+        const optionsList = document.getElementById('optionsList');
+
+        // Elementos do Criar Target
+        const targetName = document.getElementById('targetName');
+        const targetDescription = document.getElementById('targetDescription');
+        const targetCount = document.getElementById('targetCount');
+        const generateTargetBtn = document.getElementById('generateTargetBtn');
+        const targetInputsContainer = document.getElementById('targetInputsContainer');
+        const sendTargetBtn = document.getElementById('sendTargetBtn');
+
+        // Modal
+        const addTimeModal = document.getElementById('addTimeModal');
+        const timeInput = document.getElementById('timeInput');
+        const confirmTimeBtn = document.getElementById('confirmTimeBtn');
+        const cancelTimeBtn = document.getElementById('cancelTimeBtn');
+
+        // Credenciais
+        const ADMIN_USERNAME = 'souza';
+        const ADMIN_PASSWORD = 'dono';
+
+        // Variáveis de controle
+        let isSliding = false;
+        let isAdmin = false;
+        let loginStartTime = null;
+        let loginDurationMinutes = 30;
+        let usersList_data = [];
+        let currentEditingUser = null;
+        let selectedIconIndex = -1;
+        let isMaintenanceMode = false;
+        let maintenancePauseTime = 0;
+        let customFunctions = [];
+        let customTargets = [];
+
+        // Ícones disponíveis
+        const availableIcons = [
+            { name: 'Shield', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>' },
+            { name: 'Zap', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>' },
+            { name: 'Eye', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' },
+            { name: 'Crosshair', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><path d="M12 8v-3"></path><path d="M12 19v-3"></path><path d="M5 12h3"></path><path d="M16 12h3"></path></svg>' },
+            { name: 'Lock', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>' },
+            { name: 'Unlock', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.2 1"></path></svg>' },
+            { name: 'Radar', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><path d="M12 8v-3"></path><path d="M12 19v-3"></path><path d="M5 12h3"></path><path d="M16 12h3"></path><circle cx="12" cy="12" r="9"></circle></svg>' },
+            { name: 'Target', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle></svg>' },
+            { name: 'Flame', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.56 2.75c4.37 6.03 6.29 9.42 8.04 17.72m.64-17.72c.3.38.63.74 1 1.04 2.2 1.94 4 3.89 5.96 8.23m0 0c1.08 3.02 1.2 3.53 3.53 5.5m-18.72-4.72c-1.08-3.02-1.2-3.53-3.53-5.5"></path></svg>' },
+            { name: 'Bomb', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="13" r="9"></circle><path d="M14.4 14.4L20 20"></path></svg>' },
+            { name: 'Sword', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="14 12 20 6 14 12 8 18"></polyline><line x1="14" y1="12" x2="14" y2="2"></line></svg>' },
+            { name: 'Skull', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="10" r="2"></circle><circle cx="15" cy="10" r="2"></circle><path d="M12 20c-4 0-6-3-6-7V9c0-2 1-3 3-4 1-1 2-1 3-1s2 0 3 1c2 1 3 2 3 4v4c0 4-2 7-6 7z"></path><path d="M12 20v2"></path></svg>' }
+        ];
+
+        // Renderiza a paleta de ícones
+        function renderIconPalette() {
+            iconsGrid.innerHTML = '';
+            availableIcons.forEach((icon, index) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'icon-btn';
+                if (selectedIconIndex === index) btn.classList.add('selected');
+                btn.innerHTML = icon.svg;
+                btn.title = icon.name;
+                btn.addEventListener('click', () => {
+                    selectedIconIndex = selectedIconIndex === index ? -1 : index;
+                    renderIconPalette();
+                });
+                iconsGrid.appendChild(btn);
+            });
+        }
+
+        // Evento de submit do formulário de login
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // Validar credenciais
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                // Login de admin
+                isAdmin = true;
+                loginError.classList.remove('show');
+                loginScreen.classList.add('hidden');
+                menuScreen.classList.add('active');
+                adminSection.classList.add('visible');
+                userTypeDisplay.textContent = 'Administrador';
+                showNotification('Login de administrador realizado com sucesso!');
+                durationTime.textContent = 'Infinita';
+                loginStartTime = null;
+                updateUsersList();
+            } else {
+                // Procura na lista de usuários
+                const user = usersList_data.find(u => u.username === username && u.password === password && !u.banned);
+                
+                if (user) {
+                    // Verifica se o sistema está em manutenção
+                    if (isMaintenanceMode && !user.isAdmin) {
+                        loginError.textContent = 'Sistema em manutenção. Apenas administradores podem acessar.';
+                        loginError.classList.add('show');
+                        passwordInput.value = '';
+                        return;
+                    }
+
+                    isAdmin = user.isAdmin;
+                    loginError.classList.remove('show');
+                    loginScreen.classList.add('hidden');
+                    menuScreen.classList.add('active');
+                    if (isAdmin) {
+                        adminSection.classList.add('visible');
+                        userTypeDisplay.textContent = 'Administrador';
+                        durationTime.textContent = 'Infinita';
+                        loginStartTime = null;
+                        updateUsersList();
+                    } else {
+                        adminSection.classList.remove('visible');
+                        userTypeDisplay.textContent = 'Gerenciar opções de suporte';
+                        loginStartTime = Date.now();
+                        loginDurationMinutes = user.duration;
+                        maintenancePauseTime = 0;
+                        updateLoginDuration();
+                    }
+                    showNotification(`Login realizado com sucesso!`);
+                } else {
+                    // Login falhou
+                    loginError.textContent = 'Usuário ou senha incorretos';
+                    loginError.classList.add('show');
+                    passwordInput.value = '';
+                }
+            }
+        });
+
+        // Evento de logout
+        logoutBtn.addEventListener('click', function() {
+            loginScreen.classList.remove('hidden');
+            menuScreen.classList.remove('active');
+            loginForm.reset();
+            loginError.classList.remove('show');
+            usernameInput.focus();
+            
+            // Reset
+            isAdmin = false;
+            aimbotToggle.classList.remove('active');
+            aimFovItem.classList.remove('visible');
+            targetItem.classList.remove('visible');
+            profilePopover.classList.remove('visible');
+            maintenanceToggle.classList.remove('active');
+            loginStartTime = null;
+            selectedIconIndex = -1;
+        });
+
+        // Evento do botão de perfil
+        profileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profilePopover.classList.toggle('visible');
+        });
+
+        // Fecha o popover ao clicar fora
+        document.addEventListener('click', function() {
+            profilePopover.classList.remove('visible');
+        });
+
+        // Função para atualizar a duração do login
+        function updateLoginDuration() {
+            if (loginStartTime && !isAdmin) {
+                let elapsed = Math.floor((Date.now() - loginStartTime) / 1000 / 60);
+                
+                // Se estiver em manutenção, pausa o tempo
+                if (isMaintenanceMode) {
+                    if (maintenancePauseTime === 0) {
+                        maintenancePauseTime = elapsed;
+                    }
+                    elapsed = maintenancePauseTime;
+                } else {
+                    maintenancePauseTime = 0;
+                }
+
+                const remaining = Math.max(0, loginDurationMinutes - elapsed);
+                
+                if (remaining > 0) {
+                    durationTime.textContent = remaining + ' min';
+                } else {
+                    durationTime.textContent = 'Expirado';
+                }
+            }
+        }
+
+        // Atualiza a duração a cada segundo
+        setInterval(updateLoginDuration, 1000);
+
+        // Evento do Aimbot toggle
+        aimbotToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            const optionName = this.getAttribute('data-option');
+
+            if (this.classList.contains('active')) {
+                aimFovItem.classList.add('visible');
+                targetItem.classList.add('visible');
+                showNotification(`${optionName} Ativada`);
+            } else {
+                aimFovItem.classList.remove('visible');
+                targetItem.classList.remove('visible');
+                showNotification(`${optionName} Desativada`);
+            }
+        });
+
+        // Eventos do slider AimFOV
+        aimFovSlider.addEventListener('mousedown', function() {
+            isSliding = true;
+        });
+
+        aimFovSlider.addEventListener('touchstart', function() {
+            isSliding = true;
+        });
+
+        aimFovSlider.addEventListener('input', function() {
+            const value = this.value;
+            aimFovValue.textContent = value + '°';
+        });
+
+        aimFovSlider.addEventListener('mouseup', function() {
+            isSliding = false;
+            const value = this.value;
+            showNotification(`AimFOV ajustado para ${value}°`);
+        });
+
+        aimFovSlider.addEventListener('touchend', function() {
+            isSliding = false;
+            const value = this.value;
+            showNotification(`AimFOV ajustado para ${value}°`);
+        });
+
+        // Eventos dos botões Target (padrão)
+        function attachTargetButtonEvents() {
+            const buttons = targetItem.querySelectorAll('.target-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    const targetName = this.getAttribute('data-target');
+                    showNotification(`Target: ${targetName} selecionado`);
+                });
+            });
+        }
+        
+        attachTargetButtonEvents();
+
+        // Evento do toggle de manutenção
+        maintenanceToggle.addEventListener('click', function() {
+            this.classList.toggle('active');
+            isMaintenanceMode = this.classList.contains('active');
+            
+            if (isMaintenanceMode) {
+                maintenanceWarning.classList.add('show');
+                showNotification('Site em MANUTENÇÃO - Usuários comuns bloqueados');
+            } else {
+                maintenanceWarning.classList.remove('show');
+                showNotification('Manutenção desativada');
+                maintenancePauseTime = 0;
+            }
+        });
+
+        // Evento do botão de criar login
+        createLoginBtn.addEventListener('click', function() {
+            const username = newUsername.value.trim();
+            const password = newPassword.value.trim();
+            const duration = parseInt(newDuration.value);
+
+            if (!username || !password || !duration || duration < 1) {
+                showNotification('Preencha todos os campos corretamente');
+                return;
+            }
+
+            // Verifica se o usuário já existe
+            if (usersList_data.some(u => u.username === username)) {
+                showNotification('Este usuário já existe');
+                return;
+            }
+
+            // Adiciona à lista
+            usersList_data.push({
+                username: username,
+                password: password,
+                duration: duration,
+                isAdmin: false,
+                banned: false,
+                createdTime: Date.now()
+            });
+
+            // Limpa os inputs
+            newUsername.value = '';
+            newPassword.value = '';
+            newDuration.value = '';
+
+            updateUsersList();
+            showNotification(`Login criado: ${username}`);
+        });
+
+        // Evento do botão de gerar campos de target
+        generateTargetBtn.addEventListener('click', function() {
+            const count = parseInt(targetCount.value);
+            
+            if (!count || count < 1 || count > 10) {
+                showNotification('Digite um número entre 1 e 10');
+                return;
+            }
+
+            targetInputsContainer.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-input';
+                input.placeholder = `Opção ${i + 1}`;
+                input.maxLength = '20';
+                input.id = `targetOption${i}`;
+                targetInputsContainer.appendChild(input);
+            }
+
+            sendTargetBtn.style.display = 'block';
+            showNotification(`${count} campos gerados`);
+        });
+
+        // Evento do botão de enviar target
+        sendTargetBtn.addEventListener('click', function() {
+            const name = targetName.value.trim();
+            const description = targetDescription.value.trim();
+            const count = parseInt(targetCount.value);
+            const options = [];
+
+            if (!name || !description) {
+                showNotification('Preencha nome e descrição do target');
+                return;
+            }
+
+            for (let i = 0; i < count; i++) {
+                const input = document.getElementById(`targetOption${i}`);
+                const value = input.value.trim();
+                
+                if (!value) {
+                    showNotification(`Preencha todas as opções`);
+                    return;
+                }
+                options.push(value);
+            }
+
+            // Adiciona o novo target à lista
+            customTargets.push({
+                name: name,
+                description: description,
+                options: options,
+                id: 'target-' + Date.now()
+            });
+
+            // Limpa os inputs
+            targetName.value = '';
+            targetDescription.value = '';
+            targetCount.value = '3';
+            targetInputsContainer.innerHTML = '';
+            sendTargetBtn.style.display = 'none';
+
+            renderCustomTargets();
+            showNotification(`Target "${name}" criado com sucesso!`);
+        });
+
+        // Evento do botão de enviar função
+        sendFunctionBtn.addEventListener('click', function() {
+            const name = functionName.value.trim();
+            const description = functionDescription.value.trim();
+
+            if (!name || !description || selectedIconIndex === -1) {
+                showNotification('Selecione um ícone e preencha nome e descrição');
+                return;
+            }
+
+            const iconData = availableIcons[selectedIconIndex];
+
+            // Adiciona à lista de funções customizadas
+            customFunctions.push({
+                name: name,
+                description: description,
+                icon: iconData.svg,
+                id: 'custom-' + Date.now()
+            });
+
+            // Limpa os inputs
+            functionName.value = '';
+            functionDescription.value = '';
+            selectedIconIndex = -1;
+            renderIconPalette();
+
+            // Renderiza a nova função
+            renderCustomFunctions();
+            showNotification(`Função "${name}" adicionada com sucesso!`);
+        });
+
+        // Renderiza os targets customizados
+        function renderCustomTargets() {
+            const customTargetsContainer = document.getElementById('customTargetsContainer');
+            if (!customTargetsContainer) return;
+
+            customTargetsContainer.innerHTML = '';
+
+            customTargets.forEach((target, index) => {
+                const targetItem = document.createElement('div');
+                targetItem.className = 'target-item';
+                targetItem.style.display = 'flex';
+                
+                const targetOptionsHtml = target.options.map((opt, idx) => 
+                    `<button type="button" class="target-btn ${idx === 0 ? 'active' : ''}" data-target="${opt}">${opt}</button>`
+                ).join('');
+
+                targetItem.innerHTML = `
+                    <div class="target-header">
+                        <div class="target-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9"></circle>
+                                <circle cx="12" cy="12" r="5"></circle>
+                                <circle cx="12" cy="12" r="1"></circle>
+                            </svg>
+                        </div>
+                        <div class="target-info">
+                            <div class="target-name">${target.name}</div>
+                            <div class="target-description">${target.description}</div>
+                        </div>
+                        <button type="button" class="delete-btn" title="Excluir" data-index="${index}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="target-options">
+                        ${targetOptionsHtml}
+                    </div>
+                `;
+
+                customTargetsContainer.appendChild(targetItem);
+
+                // Adiciona eventos aos botões de target
+                const targetBtns = targetItem.querySelectorAll('.target-btn');
+                targetBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        targetBtns.forEach(b => b.classList.remove('active'));
+                        this.classList.add('active');
+                        const optName = this.getAttribute('data-target');
+                        showNotification(`Target: ${optName} selecionado`);
+                    });
+                });
+
+                // Adiciona evento ao botão de excluir
+                const deleteBtn = targetItem.querySelector('.delete-btn');
+                deleteBtn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    const targetToDelete = customTargets[idx];
+                    customTargets.splice(idx, 1);
+                    renderCustomTargets();
+                    showNotification(`Target "${targetToDelete.name}" excluído`);
+                });
+            });
+        }
+
+        // Renderiza as funções customizadas
+        function renderCustomFunctions() {
+            customFunctionsList.innerHTML = '';
+
+            customFunctions.forEach(func => {
+                const optionItem = document.createElement('div');
+                optionItem.className = 'option-item';
+                optionItem.innerHTML = `
+                    <div class="option-icon">${func.icon}</div>
+                    <div class="option-info">
+                        <div class="option-name">${func.name}</div>
+                        <div class="option-description">${func.description}</div>
+                    </div>
+                    <div class="option-controls">
+                        <button class="info-btn" title="Informações">i</button>
+                        <button class="toggle-switch" data-option="${func.name}" data-custom-id="${func.id}"></button>
+                        <button class="delete-btn" title="Excluir" data-index="${customFunctions.indexOf(func)}">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+
+                customFunctionsList.appendChild(optionItem);
+
+                // Adiciona evento ao toggle
+                const toggle = optionItem.querySelector('.toggle-switch');
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const optionName = this.getAttribute('data-option');
+
+                    if (this.classList.contains('active')) {
+                        showNotification(`${optionName} Ativada`);
+                    } else {
+                        showNotification(`${optionName} Desativada`);
+                    }
+                });
+
+                // Adiciona evento ao botão de excluir
+                const deleteBtn = optionItem.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function() {
+                        const idx = parseInt(this.getAttribute('data-index'));
+                        const funcToDelete = customFunctions[idx];
+                        customFunctions.splice(idx, 1);
+                        renderCustomFunctions();
+                        showNotification(`Função "${funcToDelete.name}" excluída`);
+                    });
+                }
+            });
+        }
+
+        // Função para atualizar a lista de usuários
+        function updateUsersList() {
+            usersList.innerHTML = '';
+
+            usersList_data.forEach((user, index) => {
+                const userCard = document.createElement('div');
+                userCard.className = 'user-card';
+                
+                const statusClass = user.isAdmin ? 'admin' : '';
+                const statusText = user.isAdmin ? 'ADM' : 'USER';
+                const bannedText = user.banned ? ' (BANIDO)' : '';
+
+                userCard.innerHTML = `
+                    <div class="user-info">
+                        <div class="user-name">${user.username}${bannedText}</div>
+                        <div class="user-pass">${user.password}</div>
+                        <div class="user-duration">${user.duration} min</div>
+                    </div>
+                    <div class="user-status ${statusClass}">${statusText}</div>
+                    <div class="user-actions">
+                        ${!user.banned ? `
+                            <button type="button" class="action-btn" data-index="${index}" title="Adicionar tempo">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                            </button>
+                            ${!user.isAdmin ? `
+                                <button type="button" class="action-btn promote" data-index="${index}" title="Promover ADM">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17.77 14.14 18.91 21.02 12 17.77 5.09 21.02 6.23 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                                    </svg>
+                                </button>
+                            ` : `
+                                <button type="button" class="action-btn danger" data-index="${index}" title="Remover ADM">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 6h18"></path>
+                                        <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6"></path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                </button>
+                            `}
+                            <button type="button" class="action-btn danger" data-index="${index}" title="Excluir">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 6h18"></path>
+                                    <path d="M8 6v12a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                            </button>
+                            <button type="button" class="action-btn danger" data-index="${index}" title="Banir">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                                </svg>
+                            </button>
+                        ` : `
+                            <span style="color: #ff4757; font-size: 10px;">Usuário banido</span>
+                        `}
+                    </div>
+                `;
+
+                usersList.appendChild(userCard);
+            });
+
+            // Adiciona eventos aos botões de ação
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    const title = this.getAttribute('title');
+                    
+                    if (title === 'Adicionar tempo') {
+                        currentEditingUser = index;
+                        timeInput.value = '';
+                        addTimeModal.classList.add('visible');
+                    } else if (title === 'Promover ADM') {
+                        usersList_data[index].isAdmin = true;
+                        updateUsersList();
+                        showNotification(`${usersList_data[index].username} promovido a ADM`);
+                    } else if (title === 'Remover ADM') {
+                        usersList_data[index].isAdmin = false;
+                        updateUsersList();
+                        showNotification(`${usersList_data[index].username} removido de ADM`);
+                    } else if (title === 'Excluir') {
+                        const username = usersList_data[index].username;
+                        usersList_data.splice(index, 1);
+                        updateUsersList();
+                        showNotification(`${username} foi excluído`);
+                    } else if (title === 'Banir') {
+                        usersList_data[index].banned = true;
+                        updateUsersList();
+                        showNotification(`${usersList_data[index].username} foi banido`);
+                    }
+                });
+            });
+        }
+
+        // Eventos do modal
+        confirmTimeBtn.addEventListener('click', function() {
+            const time = parseInt(timeInput.value);
+            if (!time || time < 1) {
+                showNotification('Digite um valor válido');
+                return;
+            }
+
+            usersList_data[currentEditingUser].duration += time;
+            updateUsersList();
+            showNotification(`${time} minutos adicionados a ${usersList_data[currentEditingUser].username}`);
+            addTimeModal.classList.remove('visible');
+        });
+
+        cancelTimeBtn.addEventListener('click', function() {
+            addTimeModal.classList.remove('visible');
+        });
+
+        // Fecha o modal ao clicar fora
+        addTimeModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('visible');
+            }
+        });
+
+        // Seleciona todos os botões toggle (exceto Aimbot e Manutenção)
+        const toggleButtons = document.querySelectorAll('.toggle-switch:not(#aimbotToggle):not(#maintenanceToggle)');
+
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const optionName = this.getAttribute('data-option');
+
+                if (this.classList.contains('active')) {
+                    showNotification(`${optionName} Ativada`);
+                } else {
+                    showNotification(`${optionName} Desativada`);
+                }
+            });
+        });
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+
+            notificationContainer.appendChild(notification);
+
+            setTimeout(() => {
+                notification.classList.add('removing');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Variaveis de atualizacoes
+        let updates = [];
+        let selectedUpdateIcon = -1;
+        const updateIcons = [
+            { name: 'Sino', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>' },
+            { name: 'Martelo', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 1H9c-1.1 0-2 .9-2 2v3H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-3V3c0-1.1-.9-2-2-2z"></path></svg>' },
+            { name: 'Estrela', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17.77 14.02 18.88 21.02 12 17.77 5.12 21.02 6.23 14.02 2 9.27 8.91 8.26 12 2"></polygon></svg>' },
+            { name: 'Raio', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>' },
+            { name: 'Alerta', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>' },
+            { name: 'Check', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>' }
+        ];
+
+        // Renderizar paleta de icones de atualizacao
+        function renderUpdateIconPalette() {
+            const grid = document.getElementById('updateIconsGrid');
+            grid.innerHTML = '';
+            updateIcons.forEach((icon, index) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'update-icon-btn';
+                if (selectedUpdateIcon === index) btn.classList.add('selected');
+                btn.innerHTML = icon.svg;
+                btn.title = icon.name;
+                btn.addEventListener('click', () => {
+                    selectedUpdateIcon = selectedUpdateIcon === index ? -1 : index;
+                    renderUpdateIconPalette();
+                });
+                grid.appendChild(btn);
+            });
+        }
+
+        // Elementos de notificacoes
+        const notificationsBtn = document.getElementById('notificationsBtn');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const updatesModal = document.getElementById('updatesModal');
+        const closeUpdatesModal = document.getElementById('closeUpdatesModal');
+        const updatesContainer = document.getElementById('updatesContainer');
+        const updateTitle = document.getElementById('updateTitle');
+        const updateDescription = document.getElementById('updateDescription');
+        const sendUpdateBtn = document.getElementById('sendUpdateBtn');
+
+        // Evento de clique no botao de notificacoes
+        notificationsBtn.addEventListener('click', function() {
+            updatesModal.classList.add('visible');
+            notificationBadge.textContent = '0';
+        });
+
+        // Fechar modal de atualizacoes
+        closeUpdatesModal.addEventListener('click', function() {
+            updatesModal.classList.remove('visible');
+        });
+
+        // Fechar modal ao clicar fora
+        updatesModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('visible');
+            }
+        });
+
+        // Enviar atualizacao
+        sendUpdateBtn.addEventListener('click', function() {
+            const title = updateTitle.value.trim();
+            const description = updateDescription.value.trim();
+
+            if (!title || !description) {
+                showNotification('Preencha titulo e descricao');
+                return;
+            }
+
+            if (selectedUpdateIcon === -1) {
+                showNotification('Selecione um icone');
+                return;
+            }
+
+            const update = {
+                title: title,
+                description: description,
+                icon: updateIcons[selectedUpdateIcon].svg,
+                timestamp: new Date().toLocaleString('pt-BR')
+            };
+
+            updates.unshift(update);
+            updateTitle.value = '';
+            updateDescription.value = '';
+            selectedUpdateIcon = -1;
+            renderUpdateIconPalette();
+            showNotification(`Atualizacao "${title}" enviada com sucesso!`);
+            renderUpdatesModal();
+            notificationBadge.textContent = updates.length;
+        });
+
+        // Renderizar modal de atualizacoes
+        function renderUpdatesModal() {
+            updatesContainer.innerHTML = '';
+            if (updates.length === 0) {
+                updatesContainer.innerHTML = '<div style="text-align: center; color: #a0a0a0; padding: 20px;">Nenhuma atualizacao ainda</div>';
+                return;
+            }
+            updates.forEach(update => {
+                const updateItem = document.createElement('div');
+                updateItem.className = 'update-item';
+                updateItem.innerHTML = `
+                    <div class="update-icon">${update.icon}</div>
+                    <div class="update-content">
+                        <div class="update-title">${update.title}</div>
+                        <div class="update-description">${update.description}</div>
+                        <div class="update-timestamp">${update.timestamp}</div>
+                    </div>
+                `;
+                updatesContainer.appendChild(updateItem);
+            });
+        }
+
+        // Inicializar paleta de icones
+        renderIconPalette();
+        renderUpdateIconPalette();
+
+        // Botao de limpar cache de notificacoes
+        const clearCacheBtn = document.getElementById('clearCacheBtn');
+        clearCacheBtn.addEventListener('click', function() {
+            updates = [];
+            notificationBadge.textContent = '0';
+            renderUpdatesModal();
+            showNotification('Cache de notificacoes limpo com sucesso!');
+        });
+    </script>
+</body>
+</html>
